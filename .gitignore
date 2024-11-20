@@ -3,7 +3,10 @@
 
 # Log file
 *.log
+
+# Package exclusions with exceptions
 *.tgz
+!generic-postgres-backend-*.tgz  # Exception pour le package Helm
 
 # BlueJ files
 *.ctxt
@@ -20,14 +23,15 @@
 *.tar.gz
 *.rar
 
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+# virtual machine crash logs
 hs_err_pid*
 replay_pid*
 
+# Environment and secrets
 .env
 *.env
-# enlever tous les fichiers contenant des secrets
 *secret*.sh
-# Ne pas ignorer le fichier 'values.yaml'
-!values.yaml
 !scripts/create-secret-script.sh
+
+# Ne pas ignorer le fichier values.yaml
+!values.yaml

@@ -1,0 +1,2 @@
+# Generic Postgres Backend Helm Chart
+Helm chart for deploying PostgreSQL on Kubernetes
