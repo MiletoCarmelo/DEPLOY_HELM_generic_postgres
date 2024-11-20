@@ -13,4 +13,3 @@ spec:
     - {{ .Values.postgresql.persistence.accessMode }}
   hostPath:
     path: /data/postgresql
-s
