@@ -1,15 +1,16 @@
+# templates/pv.yaml
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: postgres-volume
+  name: {{ .Values.postgresql.nameOverride }}-pv
   labels:
-    type: local
-    app: postgres
+    app: {{ .Values.postgresql.nameOverride }}
 spec:
-  storageClassName: manual
+  storageClassName: {{ .Values.postgresql.persistence.storageClass }}
   capacity:
-    storage: 30Gi
+    storage: {{ .Values.postgresql.persistence.size }}
   accessModes:
-    - ReadWriteMany
+    - {{ .Values.postgresql.persistence.accessMode }}
   hostPath:
     path: /data/postgresql
+s

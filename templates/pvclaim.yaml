@@ -1,13 +1,14 @@
+# templates/pvc.yaml
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: postgres-volume-claim
+  name: {{ .Values.postgresql.nameOverride }}-pvc
   labels:
-    app: postgres
+    app: {{ .Values.postgresql.nameOverride }}
 spec:
-  storageClassName: manual
+  storageClassName: {{ .Values.postgresql.persistence.storageClass }}
   accessModes:
-    - ReadWriteMany
+    - {{ .Values.postgresql.persistence.accessMode }}
   resources:
     requests:
-      storage: 20Gi
+      storage: {{ .Values.postgresql.persistence.size }}
