@@ -8,7 +8,7 @@ metadata:
     app: {{ .Values.postgresql.nameOverride }}
   annotations:
     {{- if eq .Values.postgresql.tailscale.status true }}
-    metallb.universe.tf/address-pool: tailscale
+    tailscale.com/expose: "true"
     {{- end }}
 spec:
   {{- if eq .Values.postgresql.tailscale.status true }}
