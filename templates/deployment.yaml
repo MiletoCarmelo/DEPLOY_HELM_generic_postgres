@@ -21,7 +21,7 @@ spec:
             - containerPort: {{ .Values.postgresql.image.containerPort }}
           envFrom:
             - secretRef:
-                name: {{ .Values.postgresql.nameOverride }}-secret
+                name: {{ .Values.postgresql.secretRef }}
           resources:
             {{- toYaml .Values.postgresql.resources | nindent 12 }}
           volumeMounts:
