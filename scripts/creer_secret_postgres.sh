@@ -55,7 +55,7 @@ kubectl get secret ${NAME_SCRET} -n ${NAMESPACE} -o yaml
 
 echo -n "POSTGRES_DB: "
 kubectl get secret ${NAME_SCRET} -n ${NAMESPACE} -o jsonpath='{.data.POSTGRES_DB}' | base64 --decode
-©echo
+echo
 
 echo -n "POSTGRES_USER: "
 kubectl get secret ${NAME_SCRET} -n ${NAMESPACE} -o jsonpath='{.data.POSTGRES_USER}' | base64 --decode
