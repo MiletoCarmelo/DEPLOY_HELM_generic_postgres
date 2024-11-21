@@ -7,7 +7,7 @@ postgresql:
     pullPolicy: IfNotPresent
     containerPort: 5432
   
-  secretRef: pg-secrets
+  secretRef: postgres-secrets
 
   replicaCount: 1
   
