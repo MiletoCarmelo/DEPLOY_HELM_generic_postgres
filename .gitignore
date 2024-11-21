@@ -6,7 +6,7 @@
 
 # Package exclusions with exceptions
 *.tgz
-!generic-postgres-backend-*.tgz  # Exception pour le package Helm
+!generic-postgres-backend-*.tgz
 
 # BlueJ files
 *.ctxt
