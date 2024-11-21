@@ -7,11 +7,15 @@ metadata:
   labels:
     app: {{ .Values.postgresql.nameOverride }}
   annotations:
-    {{- if eq .Values.postgresql.service.type "LoadBalancer" }}
+    {{- if eq .Values.postgresql.tailscale.status true }}
     metallb.universe.tf/address-pool: tailscale
     {{- end }}
 spec:
+  {{- if eq .Values.postgresql.tailscale.status true }}
+  type: LoadBalancer
+  {{- else }}
   type: {{ .Values.postgresql.service.type }}
+  {{- end }}
   ports:
     - port: {{ .Values.postgresql.service.port }}
       targetPort: {{ .Values.postgresql.service.targetPort }}
