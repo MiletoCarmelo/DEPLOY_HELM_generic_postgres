@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # secrets from .env
 POSTGRES_DB=$(grep POSTGRES_DB .env | cut -d '=' -f2)
 POSTGRES_USER=$(grep POSTGRES_USER .env | cut -d '=' -f2)
@@ -13,7 +15,6 @@ echo "POSTGRES_DB=${POSTGRES_DB}"
 echo "POSTGRES_USER=${POSTGRES_USER}"
 echo "POSTGRES_PASSWORD=***"
 
- 
 # Vérifier que les variables requises sont définies
 if [ -z "${POSTGRES_DB}" ] || [ -z "${POSTGRES_USER}" ] || [ -z "${POSTGRES_PASSWORD}" ]; then
     echo "❌ Erreur: Une ou plusieurs variables requises ne sont pas définies"
@@ -24,25 +25,42 @@ if [ -z "${POSTGRES_DB}" ] || [ -z "${POSTGRES_USER}" ] || [ -z "${POSTGRES_PASS
 fi
 
 # Vérifier si le namespace existe
-if ! kubectl get namespace ${namespace} >/dev/null 2>&1; then
-    echo "🔄 Création du namespace ${namespace}..."
-    kubectl create namespace ${namespace}
+if ! kubectl get namespace ${NAMESPACE} >/dev/null 2>&1; then
+    echo "🔄 Création du namespace ${NAMESPACE}..."
+    kubectl create namespace ${NAMESPACE}
 else
-    echo "✅ Le namespace ${namespace} existe déjà"
+    echo "✅ Le namespace ${NAMESPACE} existe déjà"
 fi
 
-# Créer un fichier temporaire pour vérifier le YAML
-echo "🔄 Génération du secret..."
-kubectl create secret generic ${NAME_SCRET} \
-  --namespace=${namespace} \
-  --from-literal=POSTGRES_DB="${POSTGRES_DB}" \
-  --from-literal=POSTGRES_USER="${POSTGRES_USER}" \
-  --from-literal=POSTGRES_PASSWORD="${POSTGRES_PASSWORD}" \
-  --dry-run=client -o yaml > /tmp/secret.yaml
+# Créer le secret en YAML
+cat <<EOF | kubectl apply -f -
+apiVersion: v1
+kind: Secret
+metadata:
+  name: ${NAME_SCRET}
+  namespace: ${NAMESPACE}
+type: Opaque
+stringData:
+  POSTGRES_DB: "${POSTGRES_DB}"
+  POSTGRES_USER: "${POSTGRES_USER}"
+  POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
+EOF
 
-# Appliquer le secret
-echo "🔄 Application du secret..."
-kubectl apply -f /tmp/secret.yaml
+echo "✅ Secret ${NAME_SCRET} créé/mis à jour avec succès"
 
-# Nettoyer
-rm /tmp/secret.yaml
+# verification contenus :
+echo "🔄 Vérification du secret..."
+echo "Secret YAML complet :"
+kubectl get secret ${NAME_SCRET} -n ${NAMESPACE} -o yaml
+
+echo -n "POSTGRES_DB: "
+kubectl get secret ${NAME_SCRET} -n ${NAMESPACE} -o jsonpath='{.data.POSTGRES_DB}' | base64 --decode
+©echo
+
+echo -n "POSTGRES_USER: "
+kubectl get secret ${NAME_SCRET} -n ${NAMESPACE} -o jsonpath='{.data.POSTGRES_USER}' | base64 --decode
+echo
+
+echo -n "POSTGRES_PASSWORD: "
+kubectl get secret ${NAME_SCRET} -n ${NAMESPACE} -o jsonpath='{.data.POSTGRES_PASSWORD}' | base64 --decode
+echo
