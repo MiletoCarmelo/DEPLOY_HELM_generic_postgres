@@ -3,12 +3,12 @@ entries:
   generic-postgres-backend:
   - apiVersion: v2
     appVersion: 1.0.0
-    created: "2024-11-21T09:58:16.458411155Z"
+    created: "2024-11-21T17:49:21.59519999Z"
     description: A Helm chart for kubernetes - Generic postgres backend
-    digest: 990472fa7801931596da6d53fa50d8177db01b290174cd8e0f07cd364b19c01b
+    digest: 9a9ba180db15951049ff6c6f9425c052a2c31551b44dd06aab379558df338d0e
     name: generic-postgres-backend
     type: application
     urls:
     - https://raw.githubusercontent.com/MiletoCarmelo/DEVOPS_HELM_generic_postgres_backend/github-pages/generic-postgres-backend-0.1.0.tgz
     version: 0.1.0
-generated: "2024-11-21T09:58:16.457976092Z"
+generated: "2024-11-21T17:49:21.594763342Z"
