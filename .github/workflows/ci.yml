@@ -1,52 +1,36 @@
-name: Release Charts
+name: CI
 
 on:
   push:
-    branches:
+    branches: 
       - main
 
+env:
+  BRANCH_PAGES: github-pages
+
+permissions:
+  contents: write
+  packages: write  # Allows pushing images to the GitHub Container Registry
+
 jobs:
-  release:
+  release-chart:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Helm Package
-        run: |
-          helm package .
-          mkdir -p .cr-release-packages
-          mv *.tgz .cr-release-packages/
-
-
-      - name: Upload chart package
-        uses: actions/upload-artifact@v3
-        with:
-          name: helm-chart
-          path: .cr-release-packages/*.tgz
-
-      - name: Configure Git
-        run: |
-          git config user.name "$GITHUB_ACTOR"
-          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
-
-      - name: Checkout gh-pages branch
+      - name: Checkout main branch
         uses: actions/checkout@v4
         with:
-          ref: github-pages
-          clean: true
-          fetch-depth: 0
+          ref: main
 
-      - name: Download chart package
-        uses: actions/download-artifact@v3
+      - name: Publish Helm chart
+        uses: stefanprodan/helm-gh-pages@master
         with:
-          name: helm-chart
+          token: ${{ secrets.GITHUB_TOKEN }}
+          charts_dir: ..
+          branch: ${{ env.BRANCH_PAGES }}
+          charts_url: https://raw.githubusercontent.com/${{ github.repository }}/${{ env.BRANCH_PAGES }}
+          linting: false
+          
+      - name: summary 
+        run: echo "https://raw.githubusercontent.com/${{ github.repository }}/${{ env.BRANCH_PAGES }}"
+      
 
-      - name: Generate Helm repository index
-        run: |
-          helm repo index . --url https://raw.githubusercontent.com/${{ github.repository }}/github-pages
-
-      - name: Commit and push changes
-        run: |
-          git add .
-          git commit -m "Update Helm chart repository"
-          git push origin github-pages
